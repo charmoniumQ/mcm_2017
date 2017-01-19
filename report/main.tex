@@ -1,0 +1,93 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Preamble
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% compile with -shell-escape and run
+% gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=main2e.pdf 2017Summary.pdf main.pdf
+\documentclass[12pt]{report}
+\usepackage[letterpaper, margin=1in]{geometry} % for formatting paper
+\usepackage{fancyhdr} % for custom header
+\usepackage{lastpage} % (for custom header)
+\usepackage{etoolbox} % for general LaTeX prograaming
+\usepackage[pdftex]{hyperref} % for inserting links and URL
+\usepackage{mathtools} % imports amsmath
+\usepackage[pdftex]{graphicx} % for \IncludeGraphics[width=1.0in]{picture.png}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor} % for \textcolor{gray}{hello world}
+\usepackage{tikz} % for computer generated graphics
+\usepackage{python} % for running python scripts and rendering their output in your documen, must enable shell-escape
+\usepackage{minted} % for code listings
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Header
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\teamnumber}{65814}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Team \# \teamnumber}
+\lhead{Page \thepage\ of \pageref{LastPage}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Letter page
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\begin{center}
+{\Large Placeholder letter title}
+\end{center}
+
+Dear Person,
+
+{
+  \setlength\parindent{36pt}
+
+  Placeholder paragraph.
+  Placeholder paragraph.
+}
+  
+Yours Sincerely,
+
+\qquad Team \#\teamnumber
+
+\eject
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title page
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\vspace*{\fill}
+\begin{centering}
+{\Huge Placeholder title \\[30pt] }
+
+{\LARGE Control Number \#\teamnumber \\[14pt]}
+
+{\LARGE \today}
+
+\end{centering}
+\vspace*{\fill}
+
+\eject
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table of contents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tableofcontents
+\thispagestyle{fancy}
+
+\eject
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Body
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setlength\parindent{36pt}
+\input{content.tex}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
