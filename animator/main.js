@@ -1,3 +1,5 @@
+var startTime = -1;
+
 // utils
 function last(arr) { return arr[arr.length - 1]; }
 
@@ -5,7 +7,7 @@ function last(arr) { return arr[arr.length - 1]; }
 const settings = {
 	car_color: "green",
 	text_color: "black",
-	fps: 0.2,
+	fps: 5,
 	car_width: 20,
 	car_length: 35,
 	frames: cars[0].length - 1,
@@ -42,7 +44,11 @@ function drawTime(context, instant, settings) {
 
 function draw() {
 	// compute frame
-	const s = new Date().getTime() / 1e3;
+	if(startTime < 0){
+		startTime = new Date().getTime() / 1e3;
+		document.getElementById("test-div").innerHTML = new Date();
+	}
+	const s = new Date().getTime() / 1e3 - startTime;
 	const f = Math.floor(s * settings.fps);
 	const weight = s * settings.fps - f;
 	const fmod = f % (settings.frames - 1);
