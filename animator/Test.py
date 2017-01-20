@@ -82,13 +82,10 @@ class Road(object):
 		for car_b, car, car_f in zip(self.cars[:], self.cars[1:], self.cars[2:]):
 			a = car.f(car_b, car_f, dt)
 			if car.v + a * dt > speedlimit:
-				# set acceleration to bring velocity up to speedlimit
+				# set acceleration to bring velocity up to speedlimit, but not past
 				a = (speedlimit - car.v) / dt
 			car.x += car.v * dt + a * dt**2 / 2
 			car.v += a * dt
-
-def transpose(arr):
-	return zip(*arr)
 
 def export(cars):
 	maxX = max(max(car.xs) for car in cars)
