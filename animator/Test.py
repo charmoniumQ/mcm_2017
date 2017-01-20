@@ -46,11 +46,11 @@ v  -- your own velocity
 s  -- length of a tick
 '''
 def f_optimal(xb, vb, xf, vf, x, v, s):
-	#~ ret = 0
-	#~ if None in (xb, vb, xf, vf, x, v, s):
-		#~ ret = 0
-	#~ else:
-		#~ return (xf+xb-2*x) / pow(s,2) + (vf+vb-2*v)/s
+	ret = 0
+	if None in (xb, vb, xf, vf, x, v, s):
+		ret = 0
+	else:
+		return (xf+xb-2*x) / pow(s,2) + (vf+vb-2*v)/s
 		
 		
 		#~ xb2 = xb + (v-vb)*s
@@ -59,9 +59,9 @@ def f_optimal(xb, vb, xf, vf, x, v, s):
 		#~ D = xmid - x
 		#~ ret = 2 * (D - v*s) / (s**2)
 
-	#~ return ret
+	return ret
 	
-	return 1
+	#~ return 300000
 
 
 '''
@@ -100,7 +100,7 @@ def simulate(F = f_optimal, N=10, V=30, T=120, s=1, verbose=False):
 	return [list(e) for e in zip(*ret)]
 	#~ return ret
 
-arr = simulate(F=lambda *args: 0, N=4, T=20, s=.25, verbose=True)
+arr = simulate(N=4, T=10, s=1, verbose=True)
 
 q = min(min(e) for e in arr) #min
 w = max(max(e) for e in arr) #max
