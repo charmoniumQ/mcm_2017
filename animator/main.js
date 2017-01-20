@@ -3,32 +3,37 @@ function last(arr) { return arr[arr.length - 1]; }
 
 // Settings
 const settings = {
-	color: "green",
-	fps: 0.5,
+	car_color: "green",
+	text_color: "black",
+	fps: 0.2,
 	car_width: 20,
 	car_length: 35,
 	frames: cars[0].length - 1,
-	dist_max: last(last(cars)),
 };
 
 // draw utilities
 function drawCar(context, instant, settings) {
 	// each frame computes its own drawCar
-	return function(positions) {
+	return function(positions, i) {
 		const pos =
   			  positions[instant.fmod] * (1 - instant.weight) +
   			  positions[instant.fmod + 1] * instant.weight;
-		x = pos / settings.dist_max * (settings.width - 1) + 1;
+		x = pos * (settings.width - 1) + 1;
+		context.fillStyle = settings.car_color;
 		context.fillRect(x, 1, settings.car_length, settings.car_width);
-		context.strokeRect(x, 1, settings.car_length, settings.car_width)
+		context.strokeRect(x, 1, settings.car_length, settings.car_width);
+		context.fillStyle = settings.text_color;
+		context.fillText(i + "", x + settings.car_length / 2, settings.car_width / 2);
 	}
 }
 
 function drawRoad(context, instant, settings) {
+	context.fillStyle = settings.text_color;
 	context.strokeRect(0, 0, settings.width, settings.car_width + 2);
 }
 
 function drawTime(context, instant, settings) {
+	context.fillStyle = settings.text_color;
 	context.fillRect(0, settings.car_width + 4,
 					 instant.phase * settings.width, 1);
 	const text = "frame: " + (instant.fmod + instant.weight).toFixed(2);
@@ -54,7 +59,6 @@ function draw() {
 	// as per http://stackoverflow.com/questions/15661339/how-do-i-fix-blurry-text-in-my-html5-canvas#15666143
 	canvas.style.width = canvas.width;
 	canvas.style.height = canvas.height;
-	context.fillStyle = settings.color;
 	context.clearRect(0, 0, settings.width, settings.height);
 
 	// draw stuff
