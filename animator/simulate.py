@@ -77,13 +77,13 @@ def export(road, dt):
         f.write('const maxX = {};\n'.format(maxX))
         f.write('const dt = {};\n'.format(dt))
 
-    plt.figure(figsize=(5,5))
-    plt.ylim(0, maxX)
-    plt.xlim(0, len(road[0][0]) * dt)
-    plt.xlabel('time')
-    plt.ylabel('dist')
     ts = np.arange(0, len(road[0][0])) * dt
-    for color, lane in zip('rgbcmyk', road):
+    for i, (color, lane) in enumerate(zip('rgbcmyk', road)):
+        plt.figure(figsize=(4, 5))
+        plt.ylim(0, maxX)
+        plt.xlim(0, len(road[0][0]) * dt)
+        plt.xlabel('time')
+        plt.ylabel('dist')
         for car in lane:
             plt.plot(ts, [instant['x'] for instant in car], color=color)
-            plt.savefig('output.png')
+        plt.savefig('lane_{i}.png'.format(**locals()))

@@ -31,13 +31,13 @@ def duplicate_time(cars, frames):
 if __name__ == '__main__':
     g_range = (10, 20)
     v_range = (20, 40)
-    frames = 10
+    frames = 100
     dt = 0.05
     speedlimit = 50
     road = [
+        duplicate_time(randomly_place(chain(2), g_range, v_range), frames),
         duplicate_time(randomly_place(chain(4), g_range, v_range), frames),
-        duplicate_time(randomly_place(chain(8), g_range, v_range), frames),
-        duplicate_time(randomly_place(chain(12), g_range, v_range), frames),
+        duplicate_time(randomly_place(chain(6), g_range, v_range), frames),
     ]
 
     simulate(road, dt, speedlimit, strategies)

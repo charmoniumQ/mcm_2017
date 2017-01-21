@@ -23,3 +23,5 @@ auto/
 # project specific
 Kerner.pdf
 data.js
+output.png
+lane_*

@@ -7,7 +7,7 @@ def strat_optimal(t_, s, b, f, lb, la, rb, ra, dt):
     else:
         t = t_ - 1 # so I don't have to retype t_ - 1 in the next line
         a = (f[t].x + b[t].x - 2*s[t].x) / pow(dt,2) + (f[t].v + b[t].v - 2*s[t].v) / dt
-        a /= 10
+        a /= 20
         return 'strat_optimal', a
 
 def strat_constant(*args):
