@@ -8,10 +8,10 @@ const settings = {
 	car_color: "green",
 	text_color: "black",
 	fps: 12,
-	car_width: 10,
-	car_length: 7,
 	frames: cars[0].length - 1,
 };
+settings.car_length = 4
+settings.car_width = 10;
 
 // draw utilities
 function drawCar(context, instant, settings) {
@@ -25,7 +25,7 @@ function drawCar(context, instant, settings) {
 		context.fillRect(x, 1, settings.car_length, settings.car_width);
 		context.strokeRect(x, 1, settings.car_length, settings.car_width);
 		context.fillStyle = settings.text_color;
-		context.fillText(i + "", x + settings.car_length / 2, settings.car_width / 2);
+		// context.fillText(i + "", x + settings.car_length / 2, settings.car_width / 2);
 	}
 }
 
@@ -68,8 +68,8 @@ function draw() {
 	context.clearRect(0, 0, settings.width, settings.height);
 
 	// draw stuff
-	drawRoad(context, instant, settings);
-	drawTime(context, instant, settings);
+	//drawRoad(context, instant, settings);
+	//drawTime(context, instant, settings);
 	cars.map(drawCar(context, instant, settings));
 	
 	// call self
