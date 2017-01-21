@@ -33,7 +33,7 @@ class CarInstant(DotDict):
         self.state, self.x, self.v, self.a = state, x, v, a
 
     def copy(self):
-        return CarInstant(self.as_dict())
+        return CarInstant(**self.as_dict())
 
     def kinematics(self):
         '''Packs kinematic variables into tuple (state, x, v, a)'''
