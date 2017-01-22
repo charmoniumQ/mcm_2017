@@ -1,20 +1,11 @@
+import collections
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import json
-from util import zip_adj, DotDict
+from util import *
 
-def check_mirror(frame, car, otherlane):
-    '''looks over your shoulder to see who is there
-    Returns (otherlane_car_backwards, otherlane_car_forwards)
-    each of which could be None if no car is present'''
-
-    if otherlane is None:
-        return (None, None)
-
-    for otherlane_car, next_otherlane_car in zip_adj(otherlane, 2, 1):
-        if next_otherlane_car is None or next_otherlane_car[frame].x > car[frame].x:
-            break
-    return (otherlane_car, next_otherlane_car)
+cmap = cm.magma
 
 def normalize_a(frame, car, a, dt, speedlimit):
     '''Prevent cars from accelerating past speedlimit or decelerating past zero'''
@@ -23,67 +14,110 @@ def normalize_a(frame, car, a, dt, speedlimit):
         return (speedlimit - car[frame].v) / dt
     elif car[frame].v + a * dt < 0:
         # decelerate exactly to zero instead
-        return car.v / dt
+        return car[frame].v / dt
     else:
         return a
 
 class CarInstant(DotDict):
-    def __init__(self, state, x, v, a, **kwargs):
+    car_i = 0
+    def __init__(self, state, lane, x, v, a, i=None, **kwargs):
         DotDict.__init__(self, **kwargs)
-        self.state, self.x, self.v, self.a = state, x, v, a
+        self.state, self.lane, self.x, self.v, self.a = state, lane, x, v, a
+        if i is None:
+            self.i = CarInstant.car_i
+            CarInstant.car_i += 1
+        else:
+            self.i = i
 
     def copy(self):
         return CarInstant(**self.as_dict())
 
     def kinematics(self):
         '''Packs kinematic variables into tuple (state, x, v, a)'''
-        return (self.state, self.x, self.v, self.a)
+        return (self.state, self.lane, self.x, self.v, self.a)
 
-def time_slice(frame, road):
-    return [[car[frame] for car in lane] for lane in road]
+def check_mirror(frame, car, lane_offset, lanes):
+    lane = car[frame].lane + lane_offset
+    if lane in lanes:
+        if lane == car[frame].lane:
+            # if searching your lane
+            for before_car, center_car, after_car in zip_adj(lanes[lane], 3, 1):
+                if after_car is None or after_car[frame].x > car[frame].x:
+                    return  before_car, after_car
+        else:
+            # if searching other lane
+            for before_car, after_car in zip_adj(lanes[lane], 2, 1):
+                if after_car is None or after_car[frame].x > car[frame].x:
+                    return before_car, after_car
+    else:
+         return None, None
 
-def simulate(road, dt, speedlimit, strategies):
+def delane(frame, road):
+    lanes = collections.defaultdict(list)
+    for car in road:
+        lanes[car[frame].lane].append(car)
+    return lanes
+
+def simulate(road, max_lane, dt, speedlimit, strategies):
     '''
-    road: array as follows road[which lane][which car][which frame] -> CarInstant
+    road: array as follows road[which car][which frame] -> CarInstant
     dt: size of one frame
     frames: number of frames to simulate
     speedlimit: speed cap on cars
-    strategies: dict as follows strategies[string] -> (function(frame, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after, dt) -> new_state, new_a)'''
-    for frame in range(1, len(road[0][0])):
-        for leftlane, lane, rightlane in zip_adj(road, 3, 1):
-            for car_before, car, car_after in zip_adj(lane, 3, 1):
-                car_left_before, car_left_after = check_mirror(frame, car, leftlane)
-                car_right_before, car_right_after = check_mirror(frame, car, rightlane)
-                state, x, v, a = car[frame - 1].kinematics()
-                state, a = strategies[state](frame, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after, dt)
-                normalize_a(frame, car, a, dt, speedlimit)
-                car[frame].a = a
-                car[frame].v = a * dt + v
-                car[frame].x = a * dt**2 / 2 + v * dt + x
-                car[frame].state = state
+    strategies: dict as follows strategies[string] -> (function(frame, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after) -> new_state, lane_change, new_a)'''
+    for frame in range(0, len(road[0]) - 1):
+        lanes = delane(frame - 1, road)
+        for car in road:
+            car_before, car_after = check_mirror(frame, car, 0, lanes)
+            car_left_before, car_left_after = check_mirror(frame, car, -1, lanes)
+            car_right_before, car_right_after = check_mirror(frame, car, 1, lanes)
+            state_, lane, x, v, a_ = car[frame].kinematics()
+            state, lane_change, a = strategies[state_](frame, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after)
+            normalize_a(frame, car, a, dt, speedlimit)
+            car[frame + 1].state = state
+            car[frame + 1].lane = clamp(lane + lane_change, 0, max_lane)
+            car[frame + 1].x = a * dt**2 / 2 + v * dt + x
+            car[frame + 1].v = a * dt + v
+            car[frame + 1].a = a
+        road = sorted(road, key=lambda car: car[frame].x)
 
 def export(road, dt):
     '''export data and graph for HTML viewer
-    road: array as follows road[which lane][which car][which frame] -> CarInstant'''
+    road: array as follows road[which car][which frame] -> CarInstant'''
 
-    # cars: cars[which car][which frame] -> x
-    cars = [[cari.x for cari in car] for lane in road for car in lane]
-    # road:  road[which lane][which car][which frame] -> dict'''
-    road = [[[car_instant.as_dict() for car_instant in car] for car in lane] for lane in road]
-    maxX = max(xs for car in cars for xs in car)
+    max_x = max(car_instant.x for car in road for car_instant in car)
+    max_lane = max(car_instant.lane for car in road for car_instant in car)
+    road_dict = [[car_instant.as_dict() for car_instant in car] for car in road]
 
     with open('data.js', 'w') as f:
-        f.write('const road = {};\n'.format(json.dumps(road)))
-        f.write('const maxX = {};\n'.format(maxX))
+        f.write('const road = {};\n'.format(json.dumps(road_dict)))
+        f.write('const max_x = {};\n'.format(max_x))
+        f.write('const max_lane = {};\n'.format(max_lane))
         f.write('const dt = {};\n'.format(dt))
 
-    ts = np.arange(0, len(road[0][0])) * dt
-    for i, (color, lane) in enumerate(zip('rgbcmyk', road)):
+        ts = np.arange(0, len(road[0])) * dt
+        max_lane = max(cari.lane for car in road for cari in car)
+        for lane in range(max_lane):
+            pass
+
+    for lane in range(max_lane + 1):
+        print('exporting graph for lane {lane}'.format(**locals()))
         plt.figure(figsize=(4, 5))
-        plt.ylim(0, maxX)
-        plt.xlim(0, len(road[0][0]) * dt)
+        plt.ylim(0, max_x)
+        plt.xlim(0, len(road[0]) * dt)
         plt.xlabel('time')
         plt.ylabel('dist')
-        for car in lane:
-            plt.plot(ts, [instant['x'] for instant in car], color=color)
-        plt.savefig('lane_{i}.png'.format(**locals()))
+        for car in road:
+            xs = []
+            ts = []
+            for frame, c in enumerate(car):
+                if c.lane == lane:
+                    xs.append(c.x)
+                    ts.append(frame * dt)
+                else:
+                    plt.plot(ts, xs, color=cmap(c.i / len(road)))
+                    xs = []
+                    ts = []
+            else:
+                plt.plot(ts, xs, color=cmap(c.i / len(road)))
+        plt.savefig('lane_{lane}.png'.format(**locals()))

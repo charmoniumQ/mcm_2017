@@ -19,3 +19,7 @@ class DotDict(argparse.Namespace):
     Call vars(dotdict_obj) -> python dict'''
     def as_dict(self):
         return vars(self)
+
+def clamp(v, min_v, max_v):
+    '''Returns the closest real number to v in [min_v, max_v]'''
+    return max(min(v, max_v), min_v)

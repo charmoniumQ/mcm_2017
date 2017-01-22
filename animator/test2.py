@@ -14,13 +14,13 @@ def randomly_place(cars, g_range, v_range):
         car.v = random.uniform(*v_range)
     return cars
 
-def chain(n):
+def chain(n, lane):
     ''''Returns n strat_optimal cars sandwiched with strat_constant cars'''
     CI = CarInstant
     return (
-        [CI('strat_constant', 0, 30, 0)] +
-        [CI('strat_optimal', 0, 30, 0) for _ in range(n)] +
-        [CI('strat_constant', 0, 30, 0)])
+        [CI('strat_random', lane, 0, 30, 0, mu=2, sigma=10, p_lane_change=0.015, lane_change_margin=5)] +
+        [CI('strat_optimal', lane, 0, 30, 0) for _ in range(n)] +
+        [CI('strat_random', lane, 0, 30, 0, mu=6, sigma=20, p_lane_change=0.015, lane_change_margin=5)])
 
 def duplicate_time(cars, frames):
     '''
@@ -34,11 +34,12 @@ if __name__ == '__main__':
     frames = 100
     dt = 0.05
     speedlimit = 50
-    road = [
-        duplicate_time(randomly_place(chain(2), g_range, v_range), frames),
-        duplicate_time(randomly_place(chain(4), g_range, v_range), frames),
-        duplicate_time(randomly_place(chain(6), g_range, v_range), frames),
-    ]
+    lanes = 2
+    road = (
+        duplicate_time(randomly_place(chain(2, 0), g_range, v_range), frames) +
+        duplicate_time(randomly_place(chain(4, 1), g_range, v_range), frames) +
+        duplicate_time(randomly_place(chain(6, 2), g_range, v_range), frames)
+    )
 
-    simulate(road, dt, speedlimit, strategies)
+    simulate(road, lanes, dt, speedlimit, strategies)
     export(road, dt)
