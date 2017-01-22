@@ -11,7 +11,17 @@
 *.cb
 *.cb2
 
+# Python files:
+__pycache__/
+*.py[cod]
+*$py.class
+
 # Emacs specific
 _minted-main/
 auto/
+
+# project specific
 Kerner.pdf
+data.js
+output.png
+lane_*
