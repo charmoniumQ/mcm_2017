@@ -86,6 +86,7 @@ linestyles = {
     'strat_random': '-',
     'strat_gipps': '--',
     'strat_leader': '-',
+    'strat_idm': '--',
 }
 
 def export(road, dt):
@@ -106,8 +107,6 @@ def export(road, dt):
         max_lane = max(cari.lane for car in road for cari in car)
         for lane in range(max_lane):
             pass
-
-    return
 
     for lane in range(max_lane + 1):
         print('exporting graph for lane {lane}'.format(**locals()))

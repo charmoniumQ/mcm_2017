@@ -27,9 +27,13 @@ v_max = partial(random.gauss, mu=20, sigma=3.2)
 def gen_gipps():
     return CarInstant('strat_gipps2', 0, 0, 0, 0, A=A(), tau=tau(), theta=tau() / 2, S=S(), v_max=v_max(), B_hat=-2 * A())
 
+
+def gen_idm():
+    return CarInstant('strat_idm', 0, 0, 0, 0, S=S(), mu=0, sigma=20, p_lane_change=0.015, lane_change_margin=5)
+
 def chain(n, lane):
     ''''Returns n strat_optimal cars sandwiched with strat_constant cars'''
-    cars = [gen_gipps() for _ in range(n)]
+    cars = [gen_idm() for _ in range(n)]
     for car in cars:
         car.lane = lane
     return cars
@@ -41,17 +45,18 @@ def duplicate_time(cars, frames):
     return [[car.copy() for _ in range(frames)] for car in cars]
 
 if __name__ == '__main__':
-    g_range = (10, 20)
-    v_range = (20, 40)
+    g_range = (10, 40)
+    v_range = (0, 20)
     frames = 1000
-    dt = 0.01
+    dt = 0.05
     speedlimit = 50
     lanes = 2
+    max_dist = 100
     road = (
         duplicate_time(randomly_place(chain(3, 0), g_range, v_range), frames) +
         duplicate_time(randomly_place(chain(5, 1), g_range, v_range), frames) +
         duplicate_time(randomly_place(chain(7, 2), g_range, v_range), frames)
     )
 
-    simulate(road, lanes, dt, speedlimit, strategies)
+    simulate(road, lanes, max_dist, dt, speedlimit, strategies)
     export(road, dt)
