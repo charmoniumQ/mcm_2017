@@ -84,6 +84,8 @@ def simulate(road, max_lane, dt, speedlimit, strategies):
 linestyles = {
     'strat_optimal': '--',
     'strat_random': '-',
+    'strat_gipps': '--',
+    'strat_leader': '-',
 }
 
 def export(road, dt):

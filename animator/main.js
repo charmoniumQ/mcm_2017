@@ -6,6 +6,8 @@ const settings = {
 		color: {
 			strat_optimal: 'yellow',
 			strat_random: 'blue',
+			strat_gipps: 'yellow',
+			strat_leader: 'blue',
 		},
 		length: 4.5,
 		width: 1.75,

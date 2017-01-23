@@ -1,3 +1,4 @@
+from math import sqrt
 import random
 
 # strategy_x(frame, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after) -> new_state, new_a
@@ -34,6 +35,34 @@ def strat_random(frame, dt, car, car_before, car_after, car_left_before, car_lef
             ):
                 lane = 0 # cancel lane change
     return 'strat_random', lane, a
+
+def strat_leader(t, dt, car, car_before, car_after, *args):
+    if car_after is None:
+        state, lane, a = strat_random(t, dt, car, car_before, car_after, *args)
+        return 'strat_gipps', lane, a
+    else:
+        return strat_gipps(t, dt, car, car_before, car_after, *args)
+
+# http://www.sciencedirect.com/science/article/pii/0191261581900370
+A = 1.7 # stddev = 0.3
+B_hat = -2 * A
+tau = 2/3
+S = 6.5 # stddev = 0.3
+V_max = 20 # stddev = 3.2
+theta = tau / 2
+
+def strat_gipps(t, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after):
+    if car_after is None:
+        return strat_leader(t, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after)
+    else:
+        s, a = car[t], car_after[t]
+        # B tau theta S B_hat
+        B = s.v**2 / (2 * (a.x - s.x + a.v**2 / (2*B_hat)))
+        v_1 = -B * (tau / 2 + theta) + sqrt(max((B * (tau / 2 + theta))**2 + B * (2 * (a.x - s.x - S) - tau * s.v + a.v**2 / B_hat), 0))
+        v_2 = s.v + 2.5 * A * tau * (1 - s.v / V_max) * (0.025 + s.v / V_max)**(1/2)
+        v = min(v_1, v_2)
+        a = (v - s.v) / dt
+        return 'strat_gipps', 0, a
 
 # export strategies to dict
 strategies = {name: val for name, val in locals().items()
