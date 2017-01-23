@@ -3,7 +3,10 @@ var startTime = -1;
 // Settings
 const settings = {
 	car: {
-		color: "green",
+		color: {
+			strat_optimal: 'yellow',
+			strat_random: 'blue',
+		},
 		length: 4.5,
 		width: 1.75,
 		scale: true,
@@ -24,11 +27,12 @@ const settings = {
 
 settings.lane.d = settings.lane.pad * 2 + settings.car.width;
 
-function drawCar_(context, instant, settings, lane_i, car_i, x_) {
+function drawCar_(context, instant, settings, car, x_) {
 	const x = x_ * settings.scale
-	const y = (settings.lane.d * lane_i + settings.lane.pad) * settings.scale;
+	const y = (settings.lane.d * car.lane + settings.lane.pad) * settings.scale;
 	const dx = settings.car.length * (settings.car.scale ? settings.scale : 1);
 	const dy = settings.car.width * (settings.car.scale ? settings.scale : 1);
+	context.fillStyle = settings.car.color[car.state];
 	context.fillRect(x, y, dx, dy);
 }
 
@@ -40,7 +44,7 @@ function carPosition(car, instant) {
 
 function drawCar(context, instant, settings) {
 	return function(car) {
-		drawCar_(context, instant, settings, car[instant.fmod].lane, car[instant.fmod].i, carPosition(car, instant));
+		drawCar_(context, instant, settings, car[instant.fmod], carPosition(car, instant));
 	};
 }
 

@@ -81,6 +81,11 @@ def simulate(road, max_lane, dt, speedlimit, strategies):
             car[frame + 1].a = a
         road = sorted(road, key=lambda car: car[frame].x)
 
+linestyles = {
+    'strat_optimal': '--',
+    'strat_random': '-',
+}
+
 def export(road, dt):
     '''export data and graph for HTML viewer
     road: array as follows road[which car][which frame] -> CarInstant'''
@@ -115,9 +120,9 @@ def export(road, dt):
                     xs.append(c.x)
                     ts.append(frame * dt)
                 else:
-                    plt.plot(ts, xs, color=cmap(c.i / len(road)))
+                    plt.plot(ts, xs, color=cmap(c.i / len(road)), linestyle=linestyles[car[0].state])
                     xs = []
                     ts = []
             else:
-                plt.plot(ts, xs, color=cmap(c.i / len(road)))
+                plt.plot(ts, xs, color=cmap(c.i / len(road)), linestyle=linestyles[car[0].state])
         plt.savefig('lane_{lane}.png'.format(**locals()))
