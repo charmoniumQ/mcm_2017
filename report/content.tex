@@ -45,8 +45,9 @@ This is the form given by Kesting et al. \cite{kesting}, which has an accelerati
 
 Kesting et al. give values for each of these constants which they claim are reasonable, realistic, and empirically measurable:
 
-
-\begin{tabular}{ccc}
+%~ \centering
+\begin{center}
+\begin{tabular}{ c c c }
 \hline
 Parameter & Car & Unit                  \\ \hline
 $v_0$     & 120 & km/h                  \\
@@ -56,13 +57,15 @@ $s_0$     & 2.0 & m                     \\
 $a$        & 1.4 & $m/s^2$ \\
 $b$        & 2.0 & $m/s^2$
 \end{tabular}
+\end{center}
 
 
 \section{Lane Changing Model}
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{kitty.jpg}
-  \caption{A kitty}
+  \includegraphics[width=\linewidth]{Lane_Changing_Graphic.png}
+  %~ \includegraphics[width=\linewidth]{kitty.jpg}
+  \caption{A potential lane change}
   \label{fig:kitty1}
 \end{figure}
 
@@ -98,6 +101,8 @@ Assuming $\epsilon^g_n(t) \sim N(0, \sigma_{\epsilon^g}^2)$, $G^{cr}$s are then 
 $P_t(gap\ acceptable) = P_t(lead\ gap\ acceptable) P_t(lag\ gap\ acceptable)$
 
  	$ = P(G^{lead}_n(t) > G^{cr, lead}_n(t) | \nu_n) P(G^{lag}_n(t) > G^{cr, lag}_n(t) | \nu_n) $
+
+
 $ = P(ln(G^{lead}_n(t)) > ln(G^{cr, lead}_n(t)) | \nu_n) P(ln(G^{lag}_n(t)) > ln(G^{cr, lag}_n(t)) | \nu_n) $
 
 $  = \Phi\left(
@@ -119,7 +124,7 @@ $  = \Phi\left(
 \item
 So then, given DCNS and $\nu_n$, the probability of switching to the left lane is given by:
 
-         $ \P_t(Left Lane (LL) | DCNS, \nu_n) = \frac{1}{1 + \exp(-X_n^{LL}\beta^{LL} - \alpha^{LL}\nu_n)} $
+         $ P_t(Left Lane (LL) | DCNS, \nu_n) = \frac{1}{1 + \exp(-X_n^{LL}\beta^{LL} - \alpha^{LL}\nu_n)} $
 
 \item
 To put it all together:	
@@ -228,13 +233,6 @@ You’re glue. I’m rubber. Staring at you with my dead rubber eyes. Forever.
 
 \begin{thebibliography}{9}
 
-\bibitem{treiber}
-	I'll get to it
-
-\bibitem{kesting}
-	Filler text is filler
-
-
 \bibitem{jiang}
 	Tao Jiang, Srdjan Petrovic, Uma Ayyer, Anand Tolani, Sajid Husain
 	Self-Driving Cars: Disruptive or Incremental?,
@@ -266,5 +264,27 @@ You’re glue. I’m rubber. Staring at you with my dead rubber eyes. Forever.
 	Springer,
 	2009.
 	%http://utdallas.primo.hosted.exlibrisgroup.com/primo_library/libweb/action/display.do;jsessionid=9F6B0DCFE6540AD9A066FCB3BF6E5A62?tabs=detailsTab&ct=display&fn=search&doc=UTD_ALMA51156292480001421&indx=1&recIds=UTD_ALMA51156292480001421&recIdxs=0&elementId=0&renderMode=poppedOut&displayMode=full&frbrVersion=&frbg=&dscnt=0&scp.scps=scope%3A%28UTD_ALMA%29&tb=t&mode=Basic&vid=UTDALMA&srt=rank&tab=catalog&vl(freeText0)=Introduction%20to%20Modern%20Traffic%20Flow%20Theory%20and%20Control&dum=true&dstmp=1484929904273
+
+\bibitem{treiber}
+	Martin Treiber, Ansgar Hennecke, and Dirk Helbing.
+	Congested Traffic States in Empirical Observations and Microscopic Simulations
+	Institute of Theoretical Physics, University of Stuttgart
+	2000
+	%~ http://journals.aps.org/pre/pdf/10.1103/PhysRevE.62.1805
+
+\bibitem{kesting}
+	Arne Kesting, Martin Treiber, and Dirk Helbing.
+	Enhanced intelligent Driver Model to Access the Impact of Driving strategies on Traffic Capacity
+	Institute for Transport \& Economics
+	18 December 2009
+	%~ https://arxiv.org/pdf/0912.3613v1.pdf
+
+\bibitem{ahmed}
+	Kazi Iftekhar Ahmed
+	Modeling Drivers' Acceleration and Lane Changing Behavior
+	Massachusetts Institute of Technology 
+	1999
+	%~ Thesis guy
+	%~ https://its.mit.edu/sites/default/files/documents/DRIVIN.PDF
 
 \end{thebibliography}
