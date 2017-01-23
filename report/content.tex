@@ -29,12 +29,178 @@ We begin with a model that excludes autonomous cars. Human driving has been stud
 
 \chapter{Human Driving}
 \thispagestyle{fancy} % this is magic. put it after every \chapter{...}
-\section{Gipps’ Car-Following Model}
-[Xander, give me some minutes. I’ll do it]
+
+
+\section{Intelligent Driver Model}
+
+In the literature, there are a multitude of car following models with a wide range of complexity and supporting evidence. Of these, most state of the art models defined constants whose values could be modified for realism given real data. After much testing and deliberation, we decided to use the Intelligent Driver Model described by Treiber et al. \cite{treiber}.
+
+In this model, the acceleration of a driver depends only on the gap between himself and the car ahead of him (s), his velocity (s), and velocity difference between himself and the car ahead of him ($\Delta v$). We can describe this by the function:
+
+$a(s, v, \Delta v) = a \left[1 - \left(\frac{v}{v_0}\right)^\delta - \left( \frac{s^*(v, \Delta v)}{s} \right)^2 \right]$
+
+$s^*(v, \Delta v) = s_0 + vT + \frac{v\Delta v}{2\sqrt{ab}} $
+
+This is the form given by Kesting et al. \cite{kesting}, which has an acceleration that does not exceed some desired acceleration $a$. This acceleration causes the car’s velocity to approach the speed limit $v_0$ using the ratio $ 1 - \left( \frac {v} {v_0} \right) ^ \delta $ but maintains a safe distance from the car in front using the ratio $ \left( \frac {s^*( v, \Delta v )} {s} \right) ^2 $. The function $s^*$ describes the gap which the driver would find reasonable based on a minimum distance $s_0$ that a driver is willing to tolerate, a reaction time or desired time gap $T$ between the two cars, and the greatest deceleration $b$ that the driver would be willing  to tolerate comfortably. The last constant, $\delta$ describes how a driver would accelerate less at higher velocities.
+
+Kesting et al. give values for each of these constants which they claim are reasonable, realistic, and empirically measurable:
+
+
+\begin{tabular}{ccc}
+\hline
+Parameter & Car & Unit                  \\ \hline
+$v_0$     & 120 & km/h                  \\
+$\delta$   & 4   &                       \\
+$T$        & 1.5 & s                     \\
+$s_0$     & 2.0 & m                     \\
+$a$        & 1.4 & $m/s^2$ \\
+$b$        & 2.0 & $m/s^2$
+\end{tabular}
+
 
 \section{Lane Changing Model}
 
-Some space filling texts are self referential.
+\begin{figure}
+  \includegraphics[width=\linewidth]{kitty.jpg}
+  \caption{A kitty}
+  \label{fig:kitty1}
+\end{figure}
+
+The phenomenon of lane changing by drivers is modeled probabilistically by Ahmed in his thesis. We used that model. See Figure \ref{fig:kitty1} for a diagram that with following the discussion.
+
+
+
+Here’s a high-level description of the model (Here, $\nu_n$ is a standard normal variable for each person, to capture uncertainty) :
+
+\begin{enumerate}
+
+\item
+
+A human decides whether or not the driving conditions in their lane are satisfactory (DCNS = “driving conditions not satisfactory”). This is given by a binary logit model.
+
+$P_t(DCNS | \nu_n) = (1 + \exp(-X_n^{DCNS}(t)\beta^{DCNS} - \alpha^{DCNS}\nu_n)) ^ {-1}$
+
+This is the probability that the driver finds the conditions in the current lane to be not satisfactory. That’s when the driver considers a lane change. 
+
+
+\item
+
+After that, the driver looks for an acceptable gap in the neighbouring lane(s). A gap is called acceptable if the lead gap is acceptable and the lag gap is acceptable. 
+
+The lead and lag gaps are acceptable if they each exceed the ‘critical’ gap.
+
+The critical gap is given by this expression:
+
+$G_n^{cr, g} = \exp(X_n^g(t)\beta^g + \alpha^g\nu_n^g(t) + \epsilon_n^g(t)), \ g \in \{lead,\ lag\}$
+
+Assuming $\epsilon^g_n(t) \sim N(0, \sigma_{\epsilon^g}^2)$, $G^{cr}$s are then log-normally distributed.
+
+$P_t(gap\ acceptable) = P_t(lead\ gap\ acceptable) P_t(lag\ gap\ acceptable)$
+
+ 	$ = P(G^{lead}_n(t) > G^{cr, lead}_n(t) | \nu_n) P(G^{lag}_n(t) > G^{cr, lag}_n(t) | \nu_n) $
+$ = P(ln(G^{lead}_n(t)) > ln(G^{cr, lead}_n(t)) | \nu_n) P(ln(G^{lag}_n(t)) > ln(G^{cr, lag}_n(t)) | \nu_n) $
+
+$  = \Phi\left(
+   \frac{
+       \ln(G^{lead}_n(t)) - X_n^{lead}(t)\beta^{lead} - \alpha^{lead}\nu_n
+   }{
+       \sigma_{\epsilon^{lead}}
+   }
+\right)
+\Phi\left(
+   \frac{
+       \ln(G^{lag}_n(t)) - X_n^{lag}(t)\beta^{lag} - \alpha^{lag}\nu_n
+   }{
+       \sigma_{\epsilon^{lag}}
+   }
+\right)
+         $
+
+\item
+So then, given DCNS and $\nu_n$, the probability of switching to the left lane is given by:
+
+         $ \P_t(Left Lane (LL) | DCNS, \nu_n) = \frac{1}{1 + \exp(-X_n^{LL}\beta^{LL} - \alpha^{LL}\nu_n)} $
+
+\item
+To put it all together:	
+
+            $ P_t(LL | \nu_n) = P_t(gap\ acceptable for\ LL) P(LL | DCNS,\ \nu_n) P(DCNS | \nu_n) $
+
+        $P_t(RL | \nu_n)$ can be similarly calculated, and simply, $P(CL | \nu_n) = 1 - (P_t(RL | \nu_n) + P_t(LL | \nu_n))$
+
+\end{enumerate}
+
+The model parameters, including which variables were the most important, and what weights/parameters to use for them, were estimated using data from Interstate 93 in Boston. Here is what we have:
+
+\noindent 
+
+$X_n^{DCNS} =
+\begin{bmatrix}
+    1 \\ \\
+    subject\ speed - desired\ speed  \\ \\
+    tailgate \\ \\
+\end{bmatrix}
+\beta^{DCNS} = \begin{bmatrix}
+    0.225\\
+    -0.0658\\
+    0.423\\
+\end{bmatrix}
+\alpha^{DCNS} = -1.11\\
+$
+
+$
+\noindent X_n^{lag} = \begin{bmatrix}
+    1 \\ \\
+    min(0, lag\ vehicle\ speed - subject\ speed)  \\ \\
+    max(0, lag\ vehicle\ speed - subject\ speed)  \\ \\
+\end{bmatrix}
+\beta^{lag} = \begin{bmatrix}
+    2.02\\
+    0.153\\
+    0.188\\
+\end{bmatrix}
+\begin{bmatrix}
+    \alpha^{lag} \\
+    \ln(\sigma_{\epsilon^{lag}})\\
+\end{bmatrix} = \begin{bmatrix}
+    -0.653 \\
+    -0.642 \\
+\end{bmatrix}\\
+$
+
+$\noindent X_n^{lead} = \begin{bmatrix}
+    1 \\ \\
+    min(0, lead\ vehicle\ speed - subject\ speed)  \\ \\
+\end{bmatrix}
+\beta^{lag} = \begin{bmatrix}
+    0.508\\
+     -0.420\\
+\end{bmatrix}
+\begin{bmatrix}
+    \alpha^{lead} \\
+    \ln(\sigma_{\epsilon^{lead}})\\
+\end{bmatrix} = \begin{bmatrix}
+    0.727 \\
+    -0.717 \\
+\end{bmatrix}
+$
+
+$\noindent X_n^{LL} = \begin{bmatrix}
+    1 \\ \\
+    Lead\ vehicle\ speed - desired\ speed  \\ \\
+    Front\ vehicle\ speed - desired\ speed  \\ \\
+    Lag\ vehicle\ speed - subject\ speed  \\ \\
+\end{bmatrix}
+$
+$
+\beta^{LL} = \begin{bmatrix}
+    -1.87\\
+    0.0328\\
+    -0.158\\
+    -0.0960\\
+\end{bmatrix}
+    \alpha^{LL} = -0.246 
+$
 
 \chapter{Autonomous Car Driving}
 \thispagestyle{fancy} % this is magic. put it after every \chapter{...}
@@ -61,6 +227,13 @@ You’re glue. I’m rubber. Staring at you with my dead rubber eyes. Forever.
 %%% End:
 
 \begin{thebibliography}{9}
+
+\bibitem{treiber}
+	I'll get to it
+
+\bibitem{kesting}
+	Filler text is filler
+
 
 \bibitem{jiang}
 	Tao Jiang, Srdjan Petrovic, Uma Ayyer, Anand Tolani, Sajid Husain
