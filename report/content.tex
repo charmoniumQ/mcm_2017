@@ -1,11 +1,97 @@
-\chapter{Placeholder chapter title}
-\thispagestyle{fancy}
+\chapter{Introduction}
+\thispagestyle{fancy} % this is magic. put it after every \chapter{...}
+\section{Self Driving Cars}
 
-\section{Placeholder section title}
+The problem of traffic theory is generally to understand human behavior on the road and to use this knowledge for optimizing infrastructure. Determining when lanes should be added, where turns and bridges should be made, what the speed limit should be are all considerations that require engineers to turn to traffic theory. However, recent developments have raised new questions in traffic theory concerning a new kind of driver: the autonomous car. 
 
-placeholder paragraph
+In theory, the efficiency of a highway system could be improved by the mere presence of these self-driving cars rather than the building of new lanes and roads. Jiang et al. \cite{jiang} cite various companies’ innovations including adaptive cruise control, lane change assistance, and vehicle-vehicle communication as game changers in traffic behavior.
+Holland \cite{holland} found that small disturbances in traffic flow propagate down through lanes of cars causing traffic jams, a result also found by MIT \cite{mit}. A system of cooperating self-driving cars would likely be less prone to this kind of jam propagation. This is likely to be true because self driving cars can be programmed with optimal driving strategies that do not propagate disturbances backward. One aspect of these optimal strategies would be the avoidance of causing disturbances in the first place, something human drivers can do simply by changing lanes poorly.
+
+\section{Kerner’s Three Phase Traffic Theory}
+Kerner \cite{kerner} proposes that all traffic is divided into one of three states. The first state is called free flow, and it describes a state of traffic in which cars are separated far enough that drivers have no need to respond to the actions of cars around them. We assume that autonomous cars will have no effect on free flow traffic since this precludes the presence of any jam for cooperative thinking to optimize. 
+
+We will instead focus on the effects of autonomous cars on the efficiency of highways in states of synchronized flow and wide moving jams which are the likely to be affected by collaborative thinking. Wide moving jams and synchronized flow are both states in which cars’ movements are determined by the cars surrounding them. Kerner distinguishes the two states by how their downstream fronts propagate. A wide moving jam propagates backward at a fixed velocity while the synchronized flow phase does not.
+
+\section{Definitions}
+We choose to measure the efficiency of a highway by its throughput. Throughput is defined as the number of cars that pass through a slice of a highway in a specific period of time. We will denote throughput by the letter “q” and use cars per second as its unit of measurement. Kerner refers to this measurement as flow and sometimes as volume, but also refers to the state of traffic (free flow, synchronized flow, wide moving jam) as kinds of flow. For the sake of clarity we will refer to this measurement only as throughput in this paper.
+
+Velocity, v, is simply the speed of a car in meters per second. Density, $\rho$, is the number of cars in a given stretch of highway and can be measured in cars per meter. Dimensional analysis tempts us to believe $q = \rho * v$, a conclusion that Kerner also arrived at.
+
+\section{Motivation and Modeling}
+
+Our ultimate goal is to model how autonomous cars would affect traffic on the highway systems in Washington state. Given real world data about a specific highway, our model will predict the throughput of that highway with different ratios of autonomous cars.
+
+Our model will focus on three main aspects of decision making which were pointed out by Jiang et al. to be crucial differences between human drivers and self driving cars. First, we will account for car following, which quantifies drivers’ reactions to the cars ahead of them, speeding up to close a gap or slowing down to avoid a collision. We will also model lane changing, where drivers make decisions based on cars in the next lane, possibly move into that lane, and possibly cause cars to slow down for the new driver in front of them. Lastly, since self-driving cars are capable of communicating with each other, an optimal strategy may involve hive-mind thinking.
+
+These decisions inherently involve taking information about density and using that information to change velocity. The differences between human responses and autonomous vehicle responses to this information will affect the throughput of the highway and provide a meaningful measurement of efficiency.
+
+We begin with a model that excludes autonomous cars. Human driving has been studied extensively for decades and provides the best foothold into the subject. 
+
+\chapter{Human Driving}
+\thispagestyle{fancy} % this is magic. put it after every \chapter{...}
+\section{Gipps’ Car-Following Model}
+[Xander, give me some minutes. I’ll do it]
+
+\section{Lane Changing Model}
+
+Some space filling texts are self referential.
+
+\chapter{Autonomous Car Driving}
+\thispagestyle{fancy} % this is magic. put it after every \chapter{...}
+\section{Optimal Car Following Strategies}
+
+Kitties are fluffy and make great space fillers.
+
+\section{Optimal Lane Changing Strategies}
+I’m rubber. You’re glue.
+
+\section{Hive Mind Optimizations}
+Glue can’t speak. You try to scream but your mouth fills with glue.
+
+\chapter{Applying the Simulator}
+\thispagestyle{fancy} % this is magic. put it after every \chapter{...}
+\section{Preparing the data}
+I wrap my rubber arms around your sticky bulk. Your neoprene base bonds instantly with my surface.
+\section{Running simulations}
+You’re glue. I’m rubber. Staring at you with my dead rubber eyes. Forever.
 
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
+
+\begin{thebibliography}{9}
+
+\bibitem{jiang}
+	Tao Jiang, Srdjan Petrovic, Uma Ayyer, Anand Tolani, Sajid Husain
+	Self-Driving Cars: Disruptive or Incremental?,
+	Applied Innovation Review,
+	Issue 1,
+	June 2015.
+	%http://cet.berkeley.edu/wp-content/uploads/Self-Driving-Cars.pdf
+
+\bibitem{holland}
+	E.N. Holland,
+	A generalised stability criterion for motorway traffic,
+	ScienceDirect,
+	Volume 32,
+	Issue 2
+	February 1998.
+	%http://cet.berkeley.edu/wp-content/uploads/Self-Driving-Cars.pdf
+
+\bibitem{mit}
+	Massachusetts Institute of Technology. 
+	Mathematicians Take Aim At 'Phantom' Traffic Jams: New Model Could Help Design Better Roads.
+	ScienceDaily. 
+	ScienceDaily,
+	14 June 2009.
+	%www.sciencedaily.com/releases/2009/06/090608151550.htm
+
+\bibitem{kerner}
+	Boris S. Kerner,
+	Introduction to Modern Traffic Flow Theory and Control,
+	Springer,
+	2009.
+	%http://utdallas.primo.hosted.exlibrisgroup.com/primo_library/libweb/action/display.do;jsessionid=9F6B0DCFE6540AD9A066FCB3BF6E5A62?tabs=detailsTab&ct=display&fn=search&doc=UTD_ALMA51156292480001421&indx=1&recIds=UTD_ALMA51156292480001421&recIdxs=0&elementId=0&renderMode=poppedOut&displayMode=full&frbrVersion=&frbg=&dscnt=0&scp.scps=scope%3A%28UTD_ALMA%29&tb=t&mode=Basic&vid=UTDALMA&srt=rank&tab=catalog&vl(freeText0)=Introduction%20to%20Modern%20Traffic%20Flow%20Theory%20and%20Control&dum=true&dstmp=1484929904273
+
+\end{thebibliography}
