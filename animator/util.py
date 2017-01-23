@@ -1,6 +1,6 @@
 import argparse
 
-def zip_adj(lst, adj, nones):
+def zip_adj(lst, adj, nones, wrap=False):
     '''Iterates over lst in tuples where each tuple has `adj` consecutive elements of lst
     `nones` will pad the list on both sides with that many nones
 
@@ -23,3 +23,6 @@ class DotDict(argparse.Namespace):
 def clamp(v, min_v, max_v):
     '''Returns the closest real number to v in [min_v, max_v]'''
     return max(min(v, max_v), min_v)
+
+def project_dict(dct, keys):
+    return {k: v for k, v in dct.items() if k in keys}

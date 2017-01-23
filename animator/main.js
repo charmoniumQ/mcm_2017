@@ -22,35 +22,35 @@ const settings = {
 		pad: 0.75,
 		length: max_x,
 		s: max_lane + 1,
-		mod: max_x,//200,
 	},
 	text_color: "black",
-	dt: dt / 10,
+	dt: dt,
 	frames: road[0].length,
 };
 
 settings.lane.d = settings.lane.pad * 2 + settings.car.width;
 
 function drawCar_(context, instant, settings, car, x_) {
-	const x = x_ * settings.scale
-	const y = (settings.lane.d * car.lane + settings.lane.pad) * settings.scale;
-	const dx = settings.car.length * (settings.car.scale ? settings.scale : 1);
-	const dy = settings.car.width * (settings.car.scale ? settings.scale : 1);
-    context.beginPath();
-    context.rect(x, y, dx, dy);
-    context.fillStyle = settings.car.color[car.state];
-    context.fill();
-    context.lineWidth = 1;
-    context.strokeStyle = 'black';
-    context.stroke();
-    context.fillStyle = 'black';
-	// context.fillText(car.i, x + dx / 3, y + dy);
+	if (car.visible) {
+		const x = x_ * settings.scale
+		const y = (settings.lane.d * car.lane + settings.lane.pad) * settings.scale;
+		const dx = settings.car.length * (settings.car.scale ? settings.scale : 1);
+		const dy = settings.car.width * (settings.car.scale ? settings.scale : 1);
+		context.beginPath();
+		context.rect(x, y, dx, dy);
+		context.fillStyle = settings.car.color[car.state];
+		context.fill();
+		context.lineWidth = 1;
+		context.strokeStyle = 'black';
+		context.stroke();
+		context.fillStyle = 'black';
+		// context.fillText(car.i, x + dx / 3, y + dy);
+	}
 }
 
 function carPosition(car, instant) {
 	return  (car[instant.fmod].x * (1 - instant.weight) +
 	         car[instant.fmod + 1].x * instant.weight)
-	        % settings.lane.mod;
 }
 
 function drawCar(context, instant, settings) {
@@ -82,11 +82,7 @@ function draw() {
 	// as per http://stackoverflow.com/questions/15661339/how-do-i-fix-blurry-text-in-my-html5-canvas#15666143
 	canvas.style.width = canvas.width;
 	canvas.style.height = canvas.height;
-	if (settings.lane.mod === undefined) {
-		settings.scale = canvas.width / (settings.lane.length + settings.car.length);
-	} else {
-		settings.scale = canvas.width / settings.lane.mod;
-	}
+	settings.scale = Math.max(canvas.width / (settings.lane.length + settings.car.length), 0);
 	context.clearRect(0, 0, settings.width, settings.height);
 
 	// draw stuff

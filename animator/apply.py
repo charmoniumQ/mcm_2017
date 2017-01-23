@@ -12,14 +12,17 @@ import matplotlib.cm as cm
 
 cmap = cm.magma
 
-def randomly_place(cars, g_range, v_range):
+def build_road(length, n_cars, v):
+    cars = [CarInstant('strat_random', 0, 0, 0, 0, mu=v, sigma=v / 10, p_lane_change=0, visible=True)]
+    randomly_place()
+    pass
+
+def randomly_place(cars, x_sigma, v_mu, v_sigma):
     '''Randomly place cars with a random gap (between gmin and gmax) with a
     random initial velocity (between vmin and vmax) both with uniform distribution'''
-    cars[0].x = 0
-    for car_b, car in zip(cars[:-1], cars[1:]):
-        car.x = car_b.x + random.uniform(*g_range)
-    for car in cars:
-        car.v = random.uniform(*v_range)
+    for i, car in enumerate(cars):
+        car.x = random.gauss(mu=length * (i / len(cars)), sigma=1.5)
+        car.v = random.gauss(mu=v_mu, sigma=v_sigma)
     return cars
 
 def gen_random():

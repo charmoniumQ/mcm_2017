@@ -82,8 +82,8 @@ v0 = 120.0 * 1000 / 3600
 sigma = 4.0
 T = 1.5
 s0 = 2.0
-A = 1.4
-B = 2.0
+A = 1.4 * 3.6
+B = 2.0 * 3.6
 C = 0.99
 
 def strat_idm(t, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after):
@@ -103,14 +103,9 @@ def strat_idm(t, dt, car, car_before, car_after, car_left_before, car_left_after
         (v - v0)**sigma # throws exception
         s_ / s
         (s_ / s)**2
-        p = (1 - (v / v0)**sigma - (s_ / s)**2)
+        p = 1 - (v / v0)**sigma - (s_ / s)**2
         a = A * p
-        if abs(p) > 100:
-            print('a =', a)
-            print('p =', p, 'almost in [-1, 1]')
-            print('v =', v, 'v0 =', v0, 'v / v0 =', v / v0, '(v / v0)**sigma =', v / v0**sigma)
-            print('s_ =', s_, 's =', s, 's / s_ =', s / s_, '(s / s_)**2', (s / s_)**2)
-            print()
+        car[t + 1].gap = s_
         return 'strat_idm', 0, a
 
 # export strategies to dict
