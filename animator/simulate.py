@@ -107,6 +107,8 @@ def export(road, dt):
         for lane in range(max_lane):
             pass
 
+    return
+
     for lane in range(max_lane + 1):
         print('exporting graph for lane {lane}'.format(**locals()))
         plt.figure(figsize=(4, 5))

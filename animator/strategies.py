@@ -36,28 +36,49 @@ def strat_random(frame, dt, car, car_before, car_after, car_left_before, car_lef
                 lane = 0 # cancel lane change
     return 'strat_random', lane, a
 
-def strat_leader(t, dt, car, car_before, car_after, *args):
-    if car_after is None:
-        state, lane, a = strat_random(t, dt, car, car_before, car_after, *args)
-        return 'strat_gipps', lane, a
-    else:
-        return strat_gipps(t, dt, car, car_before, car_after, *args)
-
 def strat_gipps(t, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after):
-    s = car[t]
-    s.theta = s.tau / 2
-    s.B_hat = -3
+    n = car[t]
     if car_after is None:
-        a = (s.v_max - s.v) / dt
+        # leader
+        a = (n.v_max - n.v) / dt
         return 'strat_gipps', 0, a
     else:
-        a = car_after[t]
+        n1 = car_after[t]
         # B tau theta S B_hat
-        s.B = s.v**2 / (2 * (a.x - s.x - a.v**2 / (2*s.B_hat)))
-        v_1 = -s.B * (s.tau / 2 + s.theta) + sqrt(max((s.B * (s.tau / 2 + s.theta))**2 + s.B * (2 * (a.x - s.x - s.S) - s.tau * s.v + a.v**2 / s.B_hat), 0))
-        v_2 = s.v + 2.5 * s.A * s.tau * (1 - s.v / s.v_max) * max(0.025 + s.v / s.v_max, 0)**(1/2)
-        a = (min(v_1, v_2) - s.v) / dt
+        xp = (-n1.v**2 - 2 * n1.B_hat * n1.x) / (2 * n1.B_hat)
+        xmid = n.x + n.v * (n.tau + n.theta)
+        n.B = -n.v**2 / (2 * (xp - xmid - n.S)) # Tushar
+        n.B = n.v**2 / (2 * (n1.x - n.x + n1.v**2 / (2*n1.B_hat))) # Sam
+        v_1 = n.v + 2.5 * n.A * n.tau * (1 - n.v / n.v_max) * sqrt(max(0.025 + n.v / n.v_max, 0))
+        v_1 = 100000
+        v_2 = -n.B * (n.tau / 2 + n.theta) + sqrt(max((n.B * (n.tau / 2 + n.theta))**2 + n.B * (2 * (n1.x - n.x - n.S) - n.tau * n.v + n1.v**2 / n1.B_hat), 0))
+        a = (min(v_1, v_2) - n.v) / dt
         return 'strat_gipps', 0, a
+
+# http://www.sciencedirect.com/science/article/pii/0191261581900370
+A = 1.7 # stddev = 0.3
+B_hat = -1 * A
+tau = 2/3
+S = 6.5 # stddev = 0.3
+V_max = 20 # stddev = 3.2
+theta = tau / 2
+
+def strat_gipps2(t, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after):
+    if car_after is None:
+        return 'strat_gipps2', 0, 0
+    else:
+        s, a = car[t], car_after[t]
+        # B tau theta S B_hat
+        B = s.v**2 / (2 * (a.x - s.x + a.v**2 / (2*B_hat)))
+        v_1 = -B * (tau / 2 + theta) + sqrt(max((B * (tau / 2 + theta))**2 + B * (2 * (a.x - s.x - S) - tau * s.v + a.v**2 / B_hat), 0))
+        v_1 = 1000
+        v_2 = s.v + 2.5 * A * tau * (1 - s.v / V_max) * (0.025 + s.v / V_max)**(1/2)
+        v = min(v_1, v_2)
+        a = (v - s.v) / dt
+        return 'strat_gipps2', 0, a
+
+def strat_follow(t, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after):
+    pass
 
 # export strategies to dict
 strategies = {name: val for name, val in locals().items()

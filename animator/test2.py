@@ -25,7 +25,7 @@ S = partial(random.gauss, mu=6.5, sigma=0.3)
 v_max = partial(random.gauss, mu=20, sigma=3.2)
 
 def gen_gipps():
-    return CarInstant('strat_gipps', 0, 0, 0, 0, A=A(), tau=tau(), S=S(), v_max=v_max())
+    return CarInstant('strat_gipps2', 0, 0, 0, 0, A=A(), tau=tau(), theta=tau() / 2, S=S(), v_max=v_max(), B_hat=-2 * A())
 
 def chain(n, lane):
     ''''Returns n strat_optimal cars sandwiched with strat_constant cars'''
@@ -43,8 +43,8 @@ def duplicate_time(cars, frames):
 if __name__ == '__main__':
     g_range = (10, 20)
     v_range = (20, 40)
-    frames = 100
-    dt = 0.05
+    frames = 1000
+    dt = 0.01
     speedlimit = 50
     lanes = 2
     road = (

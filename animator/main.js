@@ -7,6 +7,7 @@ const settings = {
 			strat_optimal: 'yellow',
 			strat_random: 'blue',
 			strat_gipps: 'yellow',
+			strat_gipps2: 'yellow',
 			strat_leader: 'blue',
 		},
 		length: 4.5,
@@ -20,7 +21,7 @@ const settings = {
 		pad: 0.75,
 		length: max_x,
 		s: max_lane + 1,
-		mod: 2000,
+		mod: 200,
 	},
 	text_color: "black",
 	dt: dt,
@@ -34,8 +35,15 @@ function drawCar_(context, instant, settings, car, x_) {
 	const y = (settings.lane.d * car.lane + settings.lane.pad) * settings.scale;
 	const dx = settings.car.length * (settings.car.scale ? settings.scale : 1);
 	const dy = settings.car.width * (settings.car.scale ? settings.scale : 1);
-	context.fillStyle = settings.car.color[car.state];
-	context.fillRect(x, y, dx, dy);
+    context.beginPath();
+    context.rect(x, y, dx, dy);
+    context.fillStyle = settings.car.color[car.state];
+    context.fill();
+    context.lineWidth = 1;
+    context.strokeStyle = 'black';
+    context.stroke();
+    context.fillStyle = 'black';
+	context.fillText(car.i, x + dx / 3, y + dy);
 }
 
 function carPosition(car, instant) {
@@ -73,7 +81,8 @@ function draw() {
 	// as per http://stackoverflow.com/questions/15661339/how-do-i-fix-blurry-text-in-my-html5-canvas#15666143
 	canvas.style.width = canvas.width;
 	canvas.style.height = canvas.height;
-	settings.scale = canvas.width / (settings.lane.length + settings.car.length);
+	// settings.scale = canvas.width / (settings.lane.length + settings.car.length);
+	settings.scale = canvas.width / settings.lane.mod;
 	context.clearRect(0, 0, settings.width, settings.height);
 
 	// draw stuff
