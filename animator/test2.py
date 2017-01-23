@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import random
+from functools import partial
 from simulate import simulate, export, CarInstant
 from strategies import strategies
 
@@ -14,12 +15,24 @@ def randomly_place(cars, g_range, v_range):
         car.v = random.uniform(*v_range)
     return cars
 
+def gen_random():
+    return CarInstant('strat_random', 0, 0, 0, 0, mu=2, sigma=10, p_lane_change=0.015, lane_change_margin=5)
+
+# http://www.sciencedirect.com/science/article/pii/0191261581900370
+A = partial(random.gauss, mu=1.7, sigma=0.3)
+tau = partial(random.gauss, mu=2/3, sigma=0.05)
+S = partial(random.gauss, mu=6.5, sigma=0.3)
+v_max = partial(random.gauss, mu=20, sigma=3.2)
+
+def gen_gipps():
+    return CarInstant('strat_gipps', 0, 0, 0, 0, A=A(), tau=tau(), S=S(), v_max=v_max())
+
 def chain(n, lane):
     ''''Returns n strat_optimal cars sandwiched with strat_constant cars'''
-    CI = CarInstant
-    return (
-        [CI('strat_gipps', lane, 0, 30, 0, mu=2, sigma=10, p_lane_change=0.015, lane_change_margin=5) for _ in range(n)]
-    )
+    cars = [gen_gipps() for _ in range(n)]
+    for car in cars:
+        car.lane = lane
+    return cars
 
 def duplicate_time(cars, frames):
     '''
