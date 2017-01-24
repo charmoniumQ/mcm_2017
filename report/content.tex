@@ -17,15 +17,19 @@ We choose to measure the efficiency of a highway by its throughput. Throughput i
 
 Velocity, v, is simply the speed of a car in meters per second. Density, $\rho$, is the number of cars in a given stretch of highway and can be measured in cars per meter. Dimensional analysis tempts us to believe $q = \rho * v$, a conclusion that Kerner also arrived at.
 
-\section{Motivation and Modeling}
+\section{Goals and Modeling}
 
 Our ultimate goal is to model how autonomous cars would affect traffic on the highway systems in Washington state. Given real world data about a specific highway, our model will predict the throughput of that highway with different ratios of autonomous cars.
 
 Our model will focus on three main aspects of decision making which were pointed out by Jiang et al. to be crucial differences between human drivers and self driving cars. First, we will account for car following, which quantifies drivers’ reactions to the cars ahead of them, speeding up to close a gap or slowing down to avoid a collision. We will also model lane changing, where drivers make decisions based on cars in the next lane, possibly move into that lane, and possibly cause cars to slow down for the new driver in front of them. Lastly, since self-driving cars are capable of communicating with each other, an optimal strategy may involve hive-mind thinking.
 
-These decisions inherently involve taking information about density and using that information to change velocity. The differences between human responses and autonomous vehicle responses to this information will affect the throughput of the highway and provide a meaningful measurement of efficiency.
+These decisions inherently involve taking information about density and using that information to change velocity. The differences between human responses and autonomous vehicle responses to this information will affect the throughput of the highway and provide a meaningful measurement of efficiency. We expect the throughput measured in vehicles per day to not change much, because roughly the same number of people will have to commute on the highway as did before (assuming rerouting is negligible); On the other hand throughput measured in vehicles per hour during rus hour will improve, because cooperating autonomous vehicles can prevent some traffic jams by keeping a roughly constant velocity.
 
-We begin with a model that excludes autonomous cars. Human driving has been studied extensively for decades and provides the best foothold into the subject. 
+\section{Methodology}
+
+In order fulfill our goal of studying the effects of autonomous cars, we want to simulate a section of highway with a program. Note that since the drivers behave differently (ie. human drivers will behave differently from autonomous drivers), we need need to simulate individual cars to find any emergent patterns. First we will find reasonable models for how humans accelerate as a function of their surroundings and how autonomous cars might accelerate as a function of their surroundings on a highway. For the former we looked at various models including Gipps \cite{gipps} and Treibar \cite{treiber}. For the autonomous we experimented with different parameters to acheive the highest traffic throughput.
+
+Once we have a simulation, we can input real-life data as the initial conditions and general parameters (ie. vehicle density, throughput, velocity of cars) while varying the percentage of autonomous cars record the throughput, which is what we ultimately seek to maximize.
 
 \chapter{Human Driving}
 \thispagestyle{fancy} % this is magic. put it after every \chapter{...}
@@ -234,6 +238,11 @@ You’re glue. I’m rubber. Staring at you with my dead rubber eyes. Forever.
 \bibitem{kesting}
 	Filler text is filler
 
+  \bibitem{gipps}
+    R Eddie Wilson
+    An analysis of Gipps’s car-following model of highway traffic
+    Department of Engineering Mathematics, University of Bristol, Bristol BS8 1TR, UK
+    IMA Journal of Applied Mathematics (2001) 66, 509–537
 
 \bibitem{jiang}
 	Tao Jiang, Srdjan Petrovic, Uma Ayyer, Anand Tolani, Sajid Husain
