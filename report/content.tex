@@ -142,9 +142,9 @@ The model parameters, including which variables were the most important, and wha
 
 $X_n^{DCNS} =
 \begin{bmatrix}
-    1 \\ \\
-    subject\ speed - desired\ speed  \\ \\
-    tailgate \\ \\
+    1 \\
+    \textrm{subject\ speed}\ - \textrm{desired\ speed}  \\
+    \textrm{tailgate} \\ 
 \end{bmatrix}
 \beta^{DCNS} = \begin{bmatrix}
     0.225\\
@@ -156,9 +156,9 @@ $
 
 $
 \noindent X_n^{lag} = \begin{bmatrix}
-    1 \\ \\
-    min(0, lag\ vehicle\ speed - subject\ speed)  \\ \\
-    max(0, lag\ vehicle\ speed - subject\ speed)  \\ \\
+    1 \\
+    \textrm{min(0, lag\ vehicle\ speed - subject\ speed)} \\
+    \textrm{max(0, lag\ vehicle\ speed - subject\ speed)}  \\
 \end{bmatrix}
 \beta^{lag} = \begin{bmatrix}
     2.02\\
@@ -175,8 +175,8 @@ $
 $
 
 $\noindent X_n^{lead} = \begin{bmatrix}
-    1 \\ \\
-    min(0, lead\ vehicle\ speed - subject\ speed)  \\ \\
+    1 \\
+    \textrm{min(0, lead\ vehicle\ speed - subject\ speed)}  \\ 
 \end{bmatrix}
 \beta^{lag} = \begin{bmatrix}
     0.508\\
@@ -193,9 +193,9 @@ $
 
 $\noindent X_n^{LL} = \begin{bmatrix}
     1 \\ \\
-    Lead\ vehicle\ speed - desired\ speed  \\ \\
-    Front\ vehicle\ speed - desired\ speed  \\ \\
-    Lag\ vehicle\ speed - subject\ speed  \\ \\
+    \textrm{Lead\ vehicle\ speed - desired\ speed}  \\
+    \textrm{Front\ vehicle\ speed - desired\ speed}  \\ 
+    \textrm{Lag\ vehicle\ speed - subject\ speed}  \\ 
 \end{bmatrix}
 $
 $
