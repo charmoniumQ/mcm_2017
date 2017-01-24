@@ -7,10 +7,10 @@ The problem of traffic theory is generally to understand human behavior on the r
 In theory, the efficiency of a highway system could be improved by the mere presence of these self-driving cars rather than the building of new lanes and roads. Jiang et al. \cite{jiang} cite various companies' innovations including adaptive cruise control, lane change assistance, and vehicle-vehicle communication as game changers in traffic behavior.
 Holland \cite{holland} found that small disturbances in traffic flow propagate down through lanes of cars causing traffic jams, a result also found by MIT \cite{mit}. A system of cooperating self-driving cars would likely be less prone to this kind of jam propagation. This is likely to be true because self driving cars can be programmed with optimal driving strategies that do not propagate disturbances backward. One aspect of these optimal strategies would be the avoidance of causing disturbances in the first place, something human drivers can do simply by changing lanes poorly.
 
-% \section{Kerner's Three Phase Traffic Theory}
-% Kerner \cite{kerner} proposes that all traffic is divided into one of three states. The first state is called free flow, and it describes a state of traffic in which cars are separated far enough that drivers have no need to respond to the actions of cars around them. We assume that autonomous cars will have no effect on free flow traffic since this precludes the presence of any jam for cooperative thinking to optimize. 
-% 
-% We will instead focus on the effects of autonomous cars on the efficiency of highways in states of synchronized flow and wide moving jams which are the likely to be affected by collaborative thinking. Wide moving jams and synchronized flow are both states in which cars' movements are determined by the cars surrounding them. Kerner distinguishes the two states by how their downstream fronts propagate. A wide moving jam propagates backward at a fixed velocity while the synchronized flow phase does not.
+\section{Kerner's Three Phase Traffic Theory}
+Kerner \cite{kerner} proposes that all traffic is divided into one of three states. The first state is called free flow, and it describes a state of traffic in which cars are separated far enough that drivers have no need to respond to the actions of cars around them. We assume that autonomous cars will have no effect on free flow traffic since this precludes the presence of any jam for cooperative thinking to optimize. 
+ 
+We will instead focus on the effects of autonomous cars on the efficiency of highways in states of synchronized flow and wide moving jams which are the likely to be affected by collaborative thinking. Wide moving jams and synchronized flow are both states in which cars' movements are determined by the cars surrounding them. Kerner distinguishes the two states by how their downstream fronts propagate. A wide moving jam propagates backward at a fixed velocity while the synchronized flow phase does not.
 
 \section{Definitions}
 We choose to measure the efficiency of a highway by its throughput. Throughput is defined as the number of cars that pass through a slice of a highway in a specific period of time. We will denote throughput by the letter “q” and use cars per second as its unit of measurement. Kerner refers to this measurement as flow and sometimes as volume, but also refers to the state of traffic (free flow, synchronized flow, wide moving jam) as kinds of flow. For the sake of clarity we will refer to this measurement only as throughput in this paper.
@@ -208,7 +208,22 @@ $
     \alpha^{LL} = -0.246 
 $
 
-\chapter{Autonomous Car Driving}
+\chapter{Self Driving Car Strategies}
+\section{Majority Human Traffic}
+
+	On the topic of car following, a strategy pointed out by Grey \cite{grey} appears to be optimal for human and non-human drivers alike. The simple principle of the strategy is that drivers should stay in the midpoint of the two cars surrounding them. This gives the most room on average for drivers to brake if the car ahead of them brakes. 
+The edge cases of this strategy are straightforward. A driver with no car ahead of them should only consider achieving the speed limit. A driver with no car behind need only maintain a sufficient gap to stop, similar to the human strategy's $s^*$ function.
+Beaty \cite{beaty} claims that a lane change should only be made when necessary, and at the last minute. Part of his car following strategy involves the driver leaving enough room ahead of them for another car to safely change lanes into. This would prevent the backward propagation of a brake wave, or a wide moving jam as Kerner called it, because there would be no braking when a merge occurs.
+The even spacing strategy would be optimal for self driving cars when the majority of drivers are human. Beaty's strategy would not be possible in an environment that includes mostly humans because humans, Beaty claims, follow a selfish strategy that tries to "punish" other drivers if they try to merge into their lane ahead of them. This claim is interestingly substantiated in the Intelligent Driver Model mentioned in the previous chapter.
+
+\section{Hive Mind Strategies}
+
+	The strategies above would be optimal solutions to human driving, but the human tendency to want to prevent drivers from merging ahead prevents these strategies from being implemented. Strategies that are autopilot-exclusive involve the communication between cars.
+	Consider a series of self-driving cars one after the other in a single lane with no human driver between them. We will call this a platoon. Platoons can move with perfect coordination, having equal gaps between them and each gap long enough for a car to merge in.
+	In traffic that contains enough self-driving cars, it is clear that these vehicles would want to form platoons by circumnavigating the human drivers around them so that they can move quickly, unhindered by human influence, but also increase safety by separating themselves from the human drivers whose ability to predict the movements of self-driving cars are hindered by the fact that their own car is not part of the hive mind.
+	Platoons have several properties that can prevent traffic jams. Their even spacing allows them to prevent brake waves from forming for a short amount of time by having the front car stop at the last possible moment and each car after do the same. Since the platoon has near-instantaneous communication, this strategy affords none of the risk that would be incurred upon human drivers. When the cause of the sudden stop has ceased, the whole platoon can accelerate simultaneously and regain its gaps as its members drive forward so that no brake wave can form behind them.
+	Since the simulation did not work in large scale, we can only postulate as to when platoon behaviour would become advantageous to all members of highway traffic. We are willing to postulate that this percentage is around 30 percent of vehicles on the highway being autonomous, but clearly further study is needed.
+
 \chapter{Applying the Simulator}
 \thispagestyle{fancy} % this is magic. put it after every \chapter{...}
 \section{Preparing the data}
@@ -327,6 +342,18 @@ We need to improve our simulation so that it works to scale, and improve our mod
 	Springer,
 	2009.
 	%http://utdallas.primo.hosted.exlibrisgroup.com/primo_library/libweb/action/display.do;jsessionid=9F6B0DCFE6540AD9A066FCB3BF6E5A62?tabs=detailsTab&ct=display&fn=search&doc=UTD_ALMA51156292480001421&indx=1&recIds=UTD_ALMA51156292480001421&recIdxs=0&elementId=0&renderMode=poppedOut&displayMode=full&frbrVersion=&frbg=&dscnt=0&scp.scps=scope%3A%28UTD_ALMA%29&tb=t&mode=Basic&vid=UTDALMA&srt=rank&tab=catalog&vl(freeText0)=Introduction%20to%20Modern%20Traffic%20Flow%20Theory%20and%20Control&dum=true&dstmp=1484929904273
+
+\bibitem{grey}
+	CGP Grey
+The Simple Solution to Traffic
+YouTube
+2016
+
+\bibitem{beaty}
+William J. Beaty
+Merging Lane Traffic Jams: A Simple Cure
+trafficwaves.org
+1998
 
 \end{thebibliography}
 
