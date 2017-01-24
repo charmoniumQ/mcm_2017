@@ -1,4 +1,5 @@
 import collections
+from strategies import strategies
 from util import *
 
 def normalize_a(frame, car, a, dt, speedlimit):
@@ -54,7 +55,7 @@ def delane(frame, road):
             lanes[car[frame].lane].append(car)
     return lanes
 
-def simulate(road, max_lane, max_dist, dt, speedlimit, strategies):
+def simulate(road, max_lane, max_dist, dt, speedlimit):
     '''
     road: array as follows road[which car][which frame] -> CarInstant
     dt: size of one frame
@@ -62,25 +63,30 @@ def simulate(road, max_lane, max_dist, dt, speedlimit, strategies):
     speedlimit: speed cap on cars
     strategies: dict as follows strategies[string] -> (function(frame, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after) -> new_state, lane_change, new_a)'''
     for frame in range(0, len(road[0]) - 1):
+       print(frame)
         road.sort(key=lambda car: car[frame].x)
         lanes = delane(frame, road)
-        for car in road:
-            if car[frame].visible:
-                car_before, car_after = check_mirror(frame, car, 0, lanes)
-                car_left_before, car_left_after = check_mirror(frame, car, -1, lanes)
-                car_right_before, car_right_after = check_mirror(frame, car, 1, lanes)
-                state_, lane, x, v, a_ = car[frame].kinematics()
-                state, lane_change, a = strategies[state_](frame, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after)
-                normalize_a(frame, car, a, dt, speedlimit)
-                car[frame + 1].state = state
-                car[frame + 1].lane = clamp(lane + lane_change, 0, max_lane)
-                car[frame + 1].x = a * dt**2 / 2 + v * dt + x 
-                car[frame + 1].v = a * dt + v
-                car[frame + 1].a = a
-                if max_dist is not None and car[frame + 1].x > max_dist:
+        # for car in road:
+        for i, lane in lanes.items():
+            for car_before, car, car_after in zip_adj(lane, 3, 1):
+                if car[frame].visible:
+                    # car_before, car_after = check_mirror(frame, car, 0, lanes)
+                    # car_left_before, car_left_after = check_mirror(frame, car, -1, lanes)
+                    car_left_before, car_left_after = None, None
+                    # car_right_before, car_right_after = check_mirror(frame, car, 1, lanes)
+                    car_right_before, car_right_after = None, None
+                    state_, lane, x, v, a_ = car[frame].kinematics()
+                    state, lane_change, a = strategies[state_](frame, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after)
+                    normalize_a(frame, car, a, dt, speedlimit)
+                    car[frame + 1].state = state
+                    car[frame + 1].lane = clamp(lane + lane_change, 0, max_lane)
+                    car[frame + 1].x = a * dt**2 / 2 + v * dt + x 
+                    car[frame + 1].v = a * dt + v
+                    car[frame + 1].a = a
+                    if max_dist is not None and car[frame + 1].x > max_dist:
+                        car[frame + 1].visible = False
+                else:
                     car[frame + 1].visible = False
-            else:
-                car[frame + 1].visible = False
         for i, lane in lanes.items():
             first_car = lane[0]
             if hasattr(first_car[frame], 'birth'):
@@ -94,7 +100,3 @@ def simulate(road, max_lane, max_dist, dt, speedlimit, strategies):
                         new_first_c.visible = True
                     road.insert(0, new_first_car)
     print(len(road))
-
-# 4928 m
-# 6260 cars / lane
-# 6 meters / car

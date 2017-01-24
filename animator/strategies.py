@@ -92,21 +92,25 @@ def strat_idm(t, dt, car, car_before, car_after, car_left_before, car_left_after
         # _, lane, a = strat_random(t, dt, car, car_before, car_after, car_left_before, car_left_after, car_right_before, car_right_after)
         return 'strat_idm', 0, a
     else:
-        n = car[t]
-        n1 = car_after[t]
-        v = n.v
-        vn1 = n1.v
-        s = n1.x - n.x - n.S
-        dv = v - vn1
-        s_ = s0 + v * T + v * dv / (2 * sqrt(A * B))
-        v / v0
-        (v - v0)**sigma # throws exception
-        s_ / s
-        (s_ / s)**2
-        p = 1 - (v / v0)**sigma - (s_ / s)**2
-        a = A * p
-        car[t + 1].gap = s_
-        return 'strat_idm', 0, a
+        try:
+            n = car[t]
+            n1 = car_after[t]
+            v = n.v
+            vn1 = n1.v
+            s = n1.x - n.x - n.S
+            dv = v - vn1
+            s_ = s0 + v * T + v * dv / (2 * sqrt(A * B))
+            v / v0
+            (v - v0)**sigma # throws exception
+            s_ / s
+            (s_ / s)**2
+            p = 1 - (v / v0)**sigma - (s_ / s)**2
+            a = A * p
+            car[t + 1].gap = s_
+            return 'strat_idm', 0, a
+        except OverflowError:
+            return 'strat_idm', 0, 0
+            
 
 # export strategies to dict
 strategies = {name: val for name, val in locals().items()

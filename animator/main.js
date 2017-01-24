@@ -11,7 +11,7 @@ const settings = {
 			strat_idm: 'yellow',
 			strat_leader: 'blue',
 		},
-		length: 4.5,
+		length: 4,
 		width: 1.75,
 		scale: true,
 		// length: 30,
@@ -23,16 +23,20 @@ const settings = {
 		length: max_x,
 		s: max_lane + 1,
 	},
+	view: {
+		start: 3500,
+		stop: 4000,
+	},
 	text_color: "black",
-	dt: dt,
+	dt: dt / 29,
 	frames: road[0].length,
 };
 
 settings.lane.d = settings.lane.pad * 2 + settings.car.width;
 
 function drawCar_(context, instant, settings, car, x_) {
-	if (car.visible) {
-		const x = x_ * settings.scale
+	if (car.visible && x_ > settings.view.start && x_ < settings.view.stop) {
+		const x = (x_ - settings.view.start) * settings.scale
 		const y = (settings.lane.d * car.lane + settings.lane.pad) * settings.scale;
 		const dx = settings.car.length * (settings.car.scale ? settings.scale : 1);
 		const dy = settings.car.width * (settings.car.scale ? settings.scale : 1);
@@ -59,12 +63,17 @@ function drawCar(context, instant, settings) {
 	};
 }
 
+function drawTime(context, instant, settings) {
+	context.fillStyle = 'black';
+	context.fillText(instant.fmod, 10, 10);
+}
+
 function draw() {
 	// compute frame
-	if(startTime < 0){
-		startTime = new Date().getTime() / 1e3;
-		document.getElementById("test-div").innerHTML = new Date();
-	}
+	// if(startTime < 0){
+	// 	startTime = new Date().getTime() / 1e3;
+	// 	document.getElementById("test-div").innerHTML = new Date();
+	// }
 	const s = new Date().getTime() / 1e3 - startTime;
 	const f = Math.floor(s / settings.dt);
 	const weight = s / settings.dt - f;
@@ -82,16 +91,19 @@ function draw() {
 	// as per http://stackoverflow.com/questions/15661339/how-do-i-fix-blurry-text-in-my-html5-canvas#15666143
 	canvas.style.width = canvas.width;
 	canvas.style.height = canvas.height;
-	settings.scale = Math.max(canvas.width / (settings.lane.length + settings.car.length), 0);
+	settings.scale = canvas.width / (settings.view.stop - settings.view.start);
 	context.clearRect(0, 0, settings.width, settings.height);
 
 	// draw stuff
 	//drawRoad(context, instant, settings);
-	// drawTime(context, instant, settings);
 	road.map(drawCar(context, instant, settings));
+	drawTime(context, instant, settings);
 	
 	// call self
 	window.requestAnimationFrame(draw);
 }
 
-window.requestAnimationFrame(draw);
+$(document).ready(function() {
+	console.log('f');
+	window.requestAnimationFrame(draw);
+});
