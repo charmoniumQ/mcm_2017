@@ -7,10 +7,10 @@ The problem of traffic theory is generally to understand human behavior on the r
 In theory, the efficiency of a highway system could be improved by the mere presence of these self-driving cars rather than the building of new lanes and roads. Jiang et al. \cite{jiang} cite various companies' innovations including adaptive cruise control, lane change assistance, and vehicle-vehicle communication as game changers in traffic behavior.
 Holland \cite{holland} found that small disturbances in traffic flow propagate down through lanes of cars causing traffic jams, a result also found by MIT \cite{mit}. A system of cooperating self-driving cars would likely be less prone to this kind of jam propagation. This is likely to be true because self driving cars can be programmed with optimal driving strategies that do not propagate disturbances backward. One aspect of these optimal strategies would be the avoidance of causing disturbances in the first place, something human drivers can do simply by changing lanes poorly.
 
-\section{Kerner's Three Phase Traffic Theory}
-Kerner \cite{kerner} proposes that all traffic is divided into one of three states. The first state is called free flow, and it describes a state of traffic in which cars are separated far enough that drivers have no need to respond to the actions of cars around them. We assume that autonomous cars will have no effect on free flow traffic since this precludes the presence of any jam for cooperative thinking to optimize. 
- 
-We will instead focus on the effects of autonomous cars on the efficiency of highways in states of synchronized flow and wide moving jams which are the likely to be affected by collaborative thinking. Wide moving jams and synchronized flow are both states in which cars' movements are determined by the cars surrounding them. Kerner distinguishes the two states by how their downstream fronts propagate. A wide moving jam propagates backward at a fixed velocity while the synchronized flow phase does not.
+% \section{Kerner's Three Phase Traffic Theory}
+% Kerner \cite{kerner} proposes that all traffic is divided into one of three states. The first state is called free flow, and it describes a state of traffic in which cars are separated far enough that drivers have no need to respond to the actions of cars around them. We assume that autonomous cars will have no effect on free flow traffic since this precludes the presence of any jam for cooperative thinking to optimize. 
+% 
+% We will instead focus on the effects of autonomous cars on the efficiency of highways in states of synchronized flow and wide moving jams which are the likely to be affected by collaborative thinking. Wide moving jams and synchronized flow are both states in which cars' movements are determined by the cars surrounding them. Kerner distinguishes the two states by how their downstream fronts propagate. A wide moving jam propagates backward at a fixed velocity while the synchronized flow phase does not.
 
 \section{Definitions}
 We choose to measure the efficiency of a highway by its throughput. Throughput is defined as the number of cars that pass through a slice of a highway in a specific period of time. We will denote throughput by the letter “q” and use cars per second as its unit of measurement. Kerner refers to this measurement as flow and sometimes as volume, but also refers to the state of traffic (free flow, synchronized flow, wide moving jam) as kinds of flow. For the sake of clarity we will refer to this measurement only as throughput in this paper.
@@ -142,9 +142,9 @@ The model parameters, including which variables were the most important, and wha
 
 $X_n^{DCNS} =
 \begin{bmatrix}
-    1 \\
-    \textrm{subject\ speed}\ - \textrm{desired\ speed}  \\
-    \textrm{tailgate} \\ 
+    1 \\ \\
+    subject\ speed - desired\ speed  \\ \\
+    tailgate \\ \\
 \end{bmatrix}
 \beta^{DCNS} = \begin{bmatrix}
     0.225\\
@@ -156,9 +156,9 @@ $
 
 $
 \noindent X_n^{lag} = \begin{bmatrix}
-    1 \\
-    \textrm{min(0, lag\ vehicle\ speed - subject\ speed)} \\
-    \textrm{max(0, lag\ vehicle\ speed - subject\ speed)}  \\
+    1 \\ \\
+    min(0, lag\ vehicle\ speed - subject\ speed)  \\ \\
+    max(0, lag\ vehicle\ speed - subject\ speed)  \\ \\
 \end{bmatrix}
 \beta^{lag} = \begin{bmatrix}
     2.02\\
@@ -175,8 +175,8 @@ $
 $
 
 $\noindent X_n^{lead} = \begin{bmatrix}
-    1 \\
-    \textrm{min(0, lead\ vehicle\ speed - subject\ speed)}  \\ 
+    1 \\ \\
+    min(0, lead\ vehicle\ speed - subject\ speed)  \\ \\
 \end{bmatrix}
 \beta^{lag} = \begin{bmatrix}
     0.508\\
@@ -193,9 +193,9 @@ $
 
 $\noindent X_n^{LL} = \begin{bmatrix}
     1 \\ \\
-    \textrm{Lead\ vehicle\ speed - desired\ speed}  \\
-    \textrm{Front\ vehicle\ speed - desired\ speed}  \\ 
-    \textrm{Lag\ vehicle\ speed - subject\ speed}  \\ 
+    Lead\ vehicle\ speed - desired\ speed  \\ \\
+    Front\ vehicle\ speed - desired\ speed  \\ \\
+    Lag\ vehicle\ speed - subject\ speed  \\ \\
 \end{bmatrix}
 $
 $
@@ -223,6 +223,7 @@ The even spacing strategy would be optimal for self driving cars when the majori
 	In traffic that contains enough self-driving cars, it is clear that these vehicles would want to form platoons by circumnavigating the human drivers around them so that they can move quickly, unhindered by human influence, but also increase safety by separating themselves from the human drivers whose ability to predict the movements of self-driving cars are hindered by the fact that their own car is not part of the hive mind.
 	Platoons have several properties that can prevent traffic jams. Their even spacing allows them to prevent brake waves from forming for a short amount of time by having the front car stop at the last possible moment and each car after do the same. Since the platoon has near-instantaneous communication, this strategy affords none of the risk that would be incurred upon human drivers. When the cause of the sudden stop has ceased, the whole platoon can accelerate simultaneously and regain its gaps as its members drive forward so that no brake wave can form behind them.
 	Since the simulation did not work in large scale, we can only postulate as to when platoon behaviour would become advantageous to all members of highway traffic. We are willing to postulate that this percentage is around 30 percent of vehicles on the highway being autonomous, but clearly further study is needed.
+
 
 \chapter{Applying the Simulator}
 \thispagestyle{fancy} % this is magic. put it after every \chapter{...}
